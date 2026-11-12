@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f3a5f">
+<title>Liberaciones CM</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+:root{
+  --bg:#f4f6f9; --card:#ffffff; --ink:#18212b; --muted:#5d6b7a; --line:#dde3ea;
+  --brand:#1f3a5f; --brand-ink:#ffffff; --accent:#2f6fb3;
+  --ok:#1e8a4c; --ok-bg:#e3f4ea;
+  --bad:#c0392b; --bad-bg:#fbe7e4;
+  --fix:#2f6fb3; --fix-bg:#e4eefa;
+  --warn:#a86b00; --warn-bg:#fdf1d8;
+  --none:#6b7785; --none-bg:#eceff3;
+  --shadow:0 1px 3px rgba(0,0,0,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#11161c; --card:#1a222b; --ink:#e7edf3; --muted:#9aa8b6; --line:#2b3642;
+    --brand:#16283f; --brand-ink:#e7edf3; --accent:#6aa6e6;
+    --ok:#4cc27e; --ok-bg:#16301f;
+    --bad:#ef6b5b; --bad-bg:#3a1c18;
+    --fix:#6aa6e6; --fix-bg:#182a40;
+    --warn:#e3a93a; --warn-bg:#36290f;
+    --none:#9aa8b6; --none-bg:#232c36;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+header.top{position:sticky;top:0;z-index:5;background:var(--brand);color:var(--brand-ink);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;gap:10px}
+header.top h1{font-size:17px;margin:0;flex:1;font-weight:650;letter-spacing:.2px}
+header.top small{display:block;font-weight:400;opacity:.75;font-size:12px}
+.iconbtn{background:transparent;border:0;color:inherit;padding:8px;border-radius:8px;cursor:pointer;line-height:0}
+.iconbtn:active{background:rgba(255,255,255,.15)}
+main{padding:12px 16px 110px;max-width:760px;margin:0 auto}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+@media(min-width:560px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;box-shadow:var(--shadow);cursor:pointer;text-align:left}
+.stat b{display:block;font-size:24px;line-height:1.1}
+.stat span{font-size:12.5px;color:var(--muted)}
+.stat.on{outline:2px solid var(--accent)}
+.stat.ok b{color:var(--ok)} .stat.bad b{color:var(--bad)} .stat.fix b{color:var(--fix)} .stat.warn b{color:var(--warn)}
+.tools{display:flex;gap:8px;margin-bottom:10px}
+.tools input,.tools select{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.tools select{flex:0 0 auto;max-width:42%}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:6px;scrollbar-width:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;box-shadow:var(--shadow);cursor:pointer;align-items:stretch}
+.thumb{width:64px;height:80px;flex:0 0 64px;border-radius:8px;background:var(--none-bg) center/cover no-repeat;display:grid;place-items:center;color:var(--muted);font-size:11px}
+.item .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.item .tag{font-weight:650;font-size:15.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .meta{font-size:12.5px;color:var(--muted)}
+.row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.badge{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px}
+.b-completa{background:var(--ok-bg);color:var(--ok)}
+.b-pendiente{background:var(--bad-bg);color:var(--bad)}
+.b-corregida{background:var(--fix-bg);color:var(--fix)}
+.b-inspector{background:var(--warn-bg);color:var(--warn)}
+.b-sinfirma{background:var(--none-bg);color:var(--none)}
+.dots{display:inline-flex;gap:3px;margin-left:auto}
+.dot{width:16px;height:16px;border-radius:4px;font-size:9.5px;font-weight:700;display:grid;place-items:center;background:var(--none-bg);color:var(--muted)}
+.dot.y{background:var(--ok);color:#fff}
+.empty{text-align:center;color:var(--muted);padding:40px 16px}
+.fab{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:6;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:14px 20px;font-weight:650;box-shadow:0 4px 14px rgba(0,0,0,.25);display:flex;gap:8px;align-items:center;cursor:pointer}
+.fab2{right:auto;left:16px;background:var(--card);color:var(--ink);border:1px solid var(--line)}
+/* editor */
+.sheet{position:fixed;inset:0;z-index:20;background:var(--bg);overflow-y:auto;display:none}
+.sheet.open{display:block}
+.sheet header.top{position:sticky}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+.sec h2{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0 0 10px;font-weight:650}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
+label.f.full{grid-column:1/-1}
+label.f input,label.f select,label.f textarea{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px;color:var(--ink);font-size:15px;width:100%}
+label.f textarea{min-height:64px;resize:vertical}
+.photos{display:flex;gap:8px;overflow-x:auto}
+.ph{position:relative;flex:0 0 auto;width:110px;height:140px;border-radius:10px;background:var(--none-bg) center/cover no-repeat;border:1px solid var(--line);cursor:pointer}
+.ph span{position:absolute;left:4px;bottom:4px;font-size:10.5px;background:rgba(0,0,0,.6);color:#fff;padding:1px 6px;border-radius:6px}
+.ph.add{display:grid;place-items:center;color:var(--accent);font-weight:600;font-size:13px;text-align:center;background:var(--bg);border-style:dashed}
+.sig{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sigbtn{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:12px 10px;text-align:left;cursor:pointer;display:flex;gap:8px;align-items:center}
+.sigbtn .ck{width:22px;height:22px;border-radius:6px;border:2px solid var(--muted);flex:0 0 22px;display:grid;place-items:center;font-size:14px;color:#fff}
+.sigbtn small{display:block;color:var(--muted);font-size:11.5px}
+.sigbtn.y{border-color:var(--ok);background:var(--ok-bg)}
+.sigbtn.y .ck{background:var(--ok);border-color:var(--ok)}
+.quick{display:flex;gap:8px;margin-top:8px}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:11px 14px;font-weight:600;cursor:pointer}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.block{width:100%}
+.toggle{display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer}
+.toggle input{width:22px;height:22px;accent-color:var(--accent)}
+.estado-big{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.estado-big .badge{font-size:14px;padding:5px 12px}
+.foot{display:flex;gap:8px;position:sticky;bottom:0;background:var(--bg);padding:10px 0 calc(10px + env(safe-area-inset-bottom))}
+.foot .btn{flex:1}
+.hint{font-size:12px;color:var(--muted);margin:6px 0 0}
+.warnbox{background:var(--warn-bg);color:var(--warn);border-radius:9px;padding:8px 10px;font-size:13px;margin-top:8px}
+/* viewer */
+.viewer{position:fixed;inset:0;z-index:40;background:#000;display:none;overflow:auto}
+.viewer.open{display:block}
+.viewer img{display:block;width:100%;height:auto}
+.viewer.zoom img{width:220%}
+.viewer .vbar{position:fixed;top:0;left:0;right:0;display:flex;gap:6px;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;background:linear-gradient(rgba(0,0,0,.7),transparent);z-index:2}
+.viewer .vbar button{background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:8px;padding:8px 12px}
+.viewer .vbar .sp{flex:1}
+/* menu */
+.menu{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.45);display:none;align-items:flex-end}
+.menu.open{display:flex}
+.menu .panel{background:var(--card);width:100%;max-width:760px;margin:0 auto;border-radius:16px 16px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px}
+.menu .panel h3{margin:0 0 4px;font-size:16px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));background:#222;color:#fff;padding:10px 16px;border-radius:10px;z-index:60;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>Liberaciones CM<small>Cuadrilla Mecánica · M&amp;B · Calidad</small></h1>
+  <button class="iconbtn" id="btnMenu" aria-label="Menú">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+</header>
+
+<main>
+  <div class="stats" id="stats"></div>
+  <div class="tools">
+    <input id="q" type="search" placeholder="Buscar TAG, supervisor, nota…" autocomplete="off">
+    <select id="fArea" aria-label="Filtrar por área"><option value="">Todas las áreas</option></select>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="list" id="list"></div>
+</main>
+
+<button class="fab fab2" id="btnGaleria" aria-label="Cargar desde galería">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-9 8"/></svg>
+  Galería
+</button>
+<button class="fab" id="btnNueva">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+  Nueva liberación
+</button>
+
+<input type="file" id="inCam" accept="image/*" capture="environment" class="hidden">
+<input type="file" id="inGal" accept="image/*" multiple class="hidden">
+<input type="file" id="inPhoto" accept="image/*" class="hidden">
+<input type="file" id="inBackup" accept=".zip,application/zip" class="hidden">
+
+<!-- EDITOR -->
+<section class="sheet" id="sheet" aria-modal="true">
+  <header class="top">
+    <button class="iconbtn" id="btnClose" aria-label="Cerrar">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <h1 id="edTitle">Nueva liberación</h1>
+  </header>
+  <main style="padding-bottom:0">
+    <div class="estado-big"><span id="edEstado" class="badge"></span><span id="edEstadoTxt" class="hint" style="margin:0"></span></div>
+
+    <div class="sec">
+      <h2>Fotos</h2>
+      <div class="photos" id="edPhotos"></div>
+    </div>
+
+    <div class="sec">
+      <h2>Datos de la liberación</h2>
+      <div class="grid2">
+        <label class="f">Fecha<input type="date" id="fFecha"></label>
+        <label class="f">Turno<select id="fTurno"><option>DIURNO</option><option>NOCTURNO</option></select></label>
+        <label class="f full">TAG del equipo intervenido<input id="fTag" placeholder="Ej. 15-K-001-C" autocapitalize="characters" autocomplete="off"></label>
+        <label class="f">Supervisor / cuadrilla<input id="fSup" list="dlSup" autocapitalize="characters" autocomplete="off"></label>
+        <label class="f">Cuad/día<select id="fCuad"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label>
+        <label class="f">Unidad<input id="fUnidad" inputmode="numeric" placeholder="auto"></label>
+        <label class="f">Área<select id="fArea2"></select></label>
+        <label class="f full">N° control (opcional)<input id="fControl" placeholder="M&B-LIB-CM-…" autocapitalize="characters"></label>
+      </div>
+      <p class="hint" id="fUnidadNom"></p>
+      <div class="warnbox hidden" id="dupWarn"></div>
+    </div>
+
+    <div class="sec">
+      <h2>Firmas en la hoja</h2>
+      <div class="sig" id="sig"></div>
+      <div class="quick">
+        <button class="btn" id="sigSoloCal" type="button" style="flex:1">Solo Calidad</button>
+        <button class="btn" id="sigTodas" type="button" style="flex:1">Las 4 firmas</button>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>Corrección</h2>
+      <label class="toggle"><input type="checkbox" id="cReq"> Requiere corrección (nota "CORREGIR")</label>
+      <div id="cBox" class="hidden">
+        <div class="grid2" style="margin-top:6px">
+          <label class="f">Fecha en que se mandó a corregir<input type="date" id="cFecha"></label>
+          <label class="f">Días en corrección<input id="cDias" disabled></label>
+          <label class="f full">Qué hay que corregir<textarea id="cNota" placeholder="Ej. falta # permiso, TAG mal escrito…"></textarea></label>
+        </div>
+        <label class="toggle" style="margin-top:8px"><input type="checkbox" id="cOk"> Ya fue corregida</label>
+        <div id="cOkBox" class="hidden">
+          <div class="grid2">
+            <label class="f">Fecha de la corrección<input type="date" id="cFechaOk"></label>
+            <div></div>
+          </div>
+          <button class="btn block" id="cAddFoto" type="button" style="margin-top:8px">📷 Agregar foto de la hoja corregida</button>
+          <p class="hint">Al marcarla corregida, confirma arriba las firmas que tiene la hoja nueva (mínimo la de Calidad).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>Observaciones</h2>
+      <label class="f full"><textarea id="fObs" placeholder="Opcional"></textarea></label>
+    </div>
+
+    <button class="btn danger block hidden" id="btnDel" type="button" style="margin-bottom:12px">Eliminar liberación</button>
+
+    <div class="foot">
+      <button class="btn" id="btnCancel" type="button">Cancelar</button>
+      <button class="btn pri" id="btnSave" type="button">Guardar</button>
+    </div>
+  </main>
+</section>
+
+<!-- VIEWER -->
+<div class="viewer" id="viewer">
+  <div class="vbar">
+    <button id="vClose">✕ Cerrar</button>
+    <span class="sp"></span>
+    <button id="vZoom">Zoom</button>
+    <button id="vDel">Quitar foto</button>
+  </div>
+  <img id="vImg" alt="Foto de la liberación">
+</div>
+
+<!-- MENU -->
+<div class="menu" id="menu">
+  <div class="panel">
+    <h3>Opciones</h3>
+    <button class="btn block" id="mExcel">📊 Exportar control a Excel</button>
+    <button class="btn block" id="mFotos">🗂️ Exportar fotos ordenadas + respaldo (ZIP)</button>
+    <button class="btn block" id="mImport">⤴️ Restaurar respaldo (ZIP)</button>
+    <p class="hint" id="mInfo"></p>
+    <button class="btn block" id="mClose">Cerrar</button>
+  </div>
+</div>
+
+<datalist id="dlSup"></datalist>
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
